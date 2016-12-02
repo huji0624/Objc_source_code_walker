@@ -1,4 +1,5 @@
 #!/usr/bin/env python
 
-class absWalker:
-	pass
+class abstractWalker:
+	def walk(cursor):
+		pass

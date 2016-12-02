@@ -12,14 +12,14 @@ def main():
     parser.add_argument("-d", "--dir", help="the dir of sources.", type=str)
     parser.add_argument(
         "-f", "--file", help="the file of source code.", type=str)
-    parser.add_argument(
-        "-w", "--walker", help="the implement walker name.", type=str)
+    # parser.add_argument(
+    #     "-w", "--walker", help="the implement walker name.", type=str)
     args = parser.parse_args()
 
-    if args.dir and args.walker:
-        walkDir(args.dir, args.walker)
-    elif args.file and args.walker:
-        waklFile(args.file, args.walker)
+    if args.dir:
+        walkDir(args.dir, None)
+    elif args.file:
+        waklFile(args.file, None)
     else:
         parser.print_help()
 
@@ -70,17 +70,22 @@ def walkCursor(cursor, file_name, walker):
     nofileKind = ('OBJC_SYNTHESIZE_DECL')
     if cursor.location.file:
         if cursor.location.file.name == file_name:
-            printCursor(cursor)
+            handleWalker(cursor,walker)
             for c in cursor.get_children():
                 walkCursor(c, file_name, walker)
     elif cursor.kind.name in nofileKind:
-        printCursor(cursor)
+        handleWalker(cursor,walker)
         for c in cursor.get_children():
             walkCursor(c, file_name, walker)
     else:
         print "----cursor has no file.----"
         printCursor(cursor)
 
+def handleWalker(cursor,walker):
+    if walker:
+        walker.walk(cursor)
+    else:
+        printCursor(cursor)
 
 def printCursor(node):
     info = {'kind': node.kind,
