@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
+import os
+rp = os.path.realpath(__file__)
+script_dir_path = os.path.split(rp)[0]
+import sys
+sys.path.append(script_dir_path)
+inited = False
 
 def main():
-    from clang.cindex import Config
-    Config.set_library_path('.')
-
     info = "Walk Objective-c source code."
 
     import argparse
@@ -23,6 +26,13 @@ def main():
     else:
         parser.print_help()
 
+def init():
+    global inited
+    global script_dir_path
+    if not inited:
+        from clang.cindex import Config
+        Config.set_library_path(dp)
+        inited = True
 
 def openCMD(cmd):
     import os
@@ -39,6 +49,7 @@ def error(err):
 
 
 def walkDir(dir_path, walker):
+    init()
     print "[Walk Directory] " + dir_path
     import os
     text = openCMD("find " + dir_path + ' -iname "*.[hm]"')
@@ -51,6 +62,7 @@ def walkDir(dir_path, walker):
 
 
 def waklFile(file_path, walker):
+    init()
     print "[Walk File] " + file_path
     from clang.cindex import Index
     import os
