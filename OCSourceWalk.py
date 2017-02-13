@@ -22,7 +22,7 @@ def main():
     if args.dir:
         walkDir(args.dir, None)
     elif args.file:
-        waklFile(args.file, None)
+        walkFile(args.file, None)
     else:
         parser.print_help()
 
@@ -56,12 +56,12 @@ def walkDir(dir_path, walker):
     lines = text.strip("\n").split("\n")
     for line in lines:
         if os.path.isfile(line):
-            waklFile(line, walker)
+            walkFile(line, walker)
         else:
             error(line + " is not valide file.")
 
 
-def waklFile(file_path, walker):
+def walkFile(file_path, walker):
     init()
     print "[Walk File] " + file_path
     from clang.cindex import Index
