@@ -31,7 +31,7 @@ def init():
     global script_dir_path
     if not inited:
         from clang.cindex import Config
-        Config.set_library_path(dp)
+        Config.set_library_path(script_dir_path)
         inited = True
 
 def openCMD(cmd):
