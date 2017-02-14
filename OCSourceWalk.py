@@ -66,9 +66,10 @@ def walkFile(file_path, walker):
     print "[Walk File] " + file_path
     from clang.cindex import Index
     import os
-    args = [file_path]
+    args = []
+    # args = ["-x","objective-c","-fmodules","-isysroot","/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.1.sdk"]
     index = Index.create()
-    tu = index.parse(None, args)
+    tu = index.parse(file_path, args)
     walkTU(tu, file_path , walker)
 
 
@@ -79,7 +80,7 @@ def walkTU(tu, file_name, walker):
 
 
 def walkCursor(cursor, file_name, walker):
-    nofileKind = ('OBJC_SYNTHESIZE_DECL')
+    nofileKind = ('OBJC_SYNTHESIZE_DECL','OBJC_CLASS_REF')
     if cursor.location.file:
         if cursor.location.file.name == file_name:
             handleWalker(cursor,walker)
@@ -104,7 +105,8 @@ def printCursor(node):
             'usr': node.get_usr(),
             'spelling': node.spelling,
             'displayname': node.displayname,
-            'location': node.location, 'file': node.location.file,
+            'location': node.location, 
+            'file': node.location.file,
             'extent.start': node.extent.start,
             'extent.end': node.extent.end,
             'is_definition': node.is_definition()}
