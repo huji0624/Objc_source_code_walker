@@ -29,15 +29,19 @@ def main():
 #for calling
 def walkDir(dir_path,walker,excludes):
     init()
-    walker.walkStart()
+    if walker:
+        walker.walkStart()
     __walkDir(dir_path,walker,excludes)
-    walker.walkEnd()
+    if walker:
+        walker.walkEnd()
     
 def walkFile(file_path,walker):
     init()
-    walker.walkStart()
+    if walker:
+        walker.walkStart()
     __walkFile(file_path,walker)
-    walker.walkEnd()
+    if walker:
+        walker.walkEnd()
 
 def init():
     global inited
