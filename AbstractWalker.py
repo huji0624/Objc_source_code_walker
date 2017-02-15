@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 
 class abstractWalker:
+	def walkStart(self):
+		pass
+
 	def walk(self,cursor):
+		pass
+
+	def walkEnd(self):
 		pass
 
 	def dump(self,cursor):

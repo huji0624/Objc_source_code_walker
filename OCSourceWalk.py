@@ -20,11 +20,24 @@ def main():
     args = parser.parse_args()
 
     if args.dir:
-        walkDir(args.dir, None)
+        walkDir(args.dir, None, None)
     elif args.file:
         walkFile(args.file, None)
     else:
         parser.print_help()
+
+#for calling
+def walkDir(dir_path,walker,excludes):
+    init()
+    walker.walkStart()
+    __walkDir(dir_path,walker,excludes)
+    walker.walkEnd()
+    
+def walkFile(file_path,walker):
+    init()
+    walker.walkStart()
+    __walkFile(file_path,walker)
+    walker.walkEnd()
 
 def init():
     global inited
@@ -48,29 +61,30 @@ def error(err):
     exit(1)
 
 
-def walkDir(dir_path, walker):
-    init()
+def __walkDir(dir_path, walker, excludes):
     print "[Walk Directory] " + dir_path
     import os
     text = openCMD("find " + dir_path + ' -iname "*.[hm]"')
     lines = text.strip("\n").split("\n")
     for line in lines:
         if os.path.isfile(line):
-            walkFile(line, walker)
+            __walkFile(line, walker)
         else:
             error(line + " is not valide file.")
 
 
-def walkFile(file_path, walker):
-    init()
+def __walkFile(file_path, walker):
     print "[Walk File] " + file_path
     from clang.cindex import Index
     import os
-    args = []
-    # args = ["-x","objective-c","-fmodules","-isysroot","/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.1.sdk"]
+    # args = ["-I","/Users/huji/Documents/didi/DiSpecialDriver/**"]
+    args = ["-x","objective-c","-fmodules","-isysroot","/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.1.sdk"]
     index = Index.create()
     tu = index.parse(file_path, args)
     walkTU(tu, file_path , walker)
+    if tu.diagnostics:
+        for d in tu.diagnostics:
+            print d
 
 
 def walkTU(tu, file_name, walker):
